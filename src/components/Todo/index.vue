@@ -20,7 +20,7 @@ if (localStorage.getItem('todos')) {
   todos.value = JSON.parse(localStorage.getItem('todos'));
 }
 const newTodo = ref('');
-const newDueDate = ref(new Date().toISOString().substr(0, 10));
+const newDueDate = ref(new Date().toISOString().slice(0, 10));
 const newCategory = ref('');
 const editTodo = ref(null);
 const editText = ref('');
@@ -223,8 +223,8 @@ const formatDueDate = (dueDate) => {
         {{ filter === 'today' ? 'Today\'s Tasks' : filter.charAt(0).toUpperCase() + filter.slice(1) }}</h1>
       <h1 class="text-2xl md:text-3xl font-bold text-blue-600">{{categoriesFilter}} - To Do List</h1>
     </div>
-    <div class="flex flex-col md:flex-row items-center justify-between mt-4">
-      <div class="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0 md:space-x-2">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between mt-4">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-2 md:space-y-0 md:space-x-2">
         <button v-if="filter === 'completed'" @click="removeAllCompletedTasks" class="bg-red-500 text-white p-2 rounded-lg shadow-md hover:bg-red-600">
           Remove All Completed Tasks
         </button>
