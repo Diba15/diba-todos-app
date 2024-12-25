@@ -3,7 +3,7 @@ defineOptions({
   name: 'Sidebar',
 })
 
-import {defineProps, defineEmits} from 'vue';
+import {ref, defineProps, defineEmits} from 'vue';
 
 const props = defineProps({
   isSidebarOpen: Boolean,
@@ -24,6 +24,7 @@ const filterTodos = (filter) => {
 
 const updateCategoriesFilter = (newFilter) => {
   emit('updateCategoriesFilter', newFilter);
+  showCategories.value = false;
 };
 
 const isActive = (filter) => {
@@ -32,6 +33,12 @@ const isActive = (filter) => {
 
 const isCategoryActive = (category) => {
   return props.categoriesFilter === category;
+};
+
+const showCategories = ref(false);
+
+const toggleCategories = () => {
+  showCategories.value = !showCategories.value;
 };
 </script>
 
@@ -46,11 +53,22 @@ const isCategoryActive = (category) => {
       <div @click="filterTodos('today')" :class="['cursor-pointer', { 'text-yellow-300': isActive('today') }]">
         <i class="fas fa-calendar-day"></i>
       </div>
+      <div @click="toggleCategories" class="bg-yellow-300 text-gray-800 p-8 rounded-full -mt-8 h-12 w-12 flex items-center justify-center">
+        <i class="fas fa-list-check"></i>
+      </div>
       <div @click="filterTodos('completed')" :class="['cursor-pointer', { 'text-yellow-300': isActive('completed') }]">
         <i class="fas fa-check"></i>
       </div>
       <div @click="filterTodos('upcoming')" :class="['cursor-pointer', { 'text-yellow-300': isActive('upcoming') }]">
         <i class="fas fa-calendar-alt"></i>
+      </div>
+    </div>
+
+    <!-- Categories List for Mobile -->
+    <div v-if="showCategories" class="fixed bottom-16 left-0 right-0 bg-white text-gray-800 shadow-lg border-t-2 border-gray-300 p-4 z-50 motion-preset-expand">
+      <div v-for="category in props.categories" :key="category" @click="updateCategoriesFilter(category)"
+           :class="['p-2 cursor-pointer', { 'bg-yellow-300 text-gray-800': isCategoryActive(category) }]">
+        {{ category }}
       </div>
     </div>
 
@@ -94,7 +112,7 @@ const isCategoryActive = (category) => {
         </div>
         <div v-for="category in props.categories" :key="category" @click="updateCategoriesFilter(category)"
              :class="['sidebar-item flex items-center p-2 text-md transition-colors duration-300 hover:bg-yellow-300 hover:text-gray-800 cursor-pointer rounded', { 'bg-yellow-300 !text-gray-800': isCategoryActive(category) }]">
-          <i class="fas fa-tag transition-colors duration-300 "></i> <span v-if="props.isSidebarOpen"
+          <i class="fas fa-list-check transition-colors duration-300 "></i> <span v-if="props.isSidebarOpen"
                                                                            class="ml-2">{{ category }}</span>
         </div>
       </div>

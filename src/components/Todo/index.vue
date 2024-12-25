@@ -1,5 +1,5 @@
 <script setup>
-import {Notification, Notivue, NotivueSwipe} from "notivue";
+import {Notification, Notivue, NotivueSwipe, push} from "notivue";
 
 defineOptions({
   name: 'Todo',
@@ -12,6 +12,8 @@ const props = defineProps({
 
 import {computed, ref, watch} from 'vue';
 import {format, isToday, isTomorrow, differenceInDays, addWeeks, addMonths, isSameWeek, isSameMonth} from 'date-fns';
+
+const animationClass = 'motion-preset-bounce'
 
 const todos = ref([]);
 if (localStorage.getItem('todos')) {
@@ -45,23 +47,47 @@ function addTodo() {
       priority: false
     });
     localStorage.setItem('todos', JSON.stringify(todos.value));
+    push.success({
+      title: 'Task added!',
+      message: 'New task has been added successfully.',
+    });
     newTodo.value = '';
     newDueDate.value = new Date().toISOString().substr(0, 10);
     newCategory.value = '';
     showAddTaskForm.value = false;
   } else {
-    alert('Please enter task name, due date, and category.');
+    push.error({
+      title: 'Invalid input!',
+      message: 'Please fill all the fields to add a new task.',
+    });
   }
 }
 
 function toggleTodo(todo) {
   todo.done = !todo.done;
   localStorage.setItem('todos', JSON.stringify(todos.value));
+
+  if (todo.done) {
+    push.success({
+      title: 'Task marked as completed!',
+      message: 'Task has been marked as completed successfully.',
+    });
+  } else {
+    push.info({
+      title: 'Task marked as incomplete!',
+      message: 'Task has been marked as incomplete successfully.',
+    });
+  }
 }
 
 function removeTodo(index) {
   todos.value.splice(index, 1);
   localStorage.setItem('todos', JSON.stringify(todos.value));
+
+  push.success({
+    title: 'Task removed!',
+    message: 'Task has been removed successfully.',
+  })
 }
 
 function startEditing(todo) {
@@ -77,6 +103,10 @@ function saveTodo() {
     editTodo.value.dueDate = editDueDate.value;
     editTodo.value.category = editCategory.value;
     localStorage.setItem('todos', JSON.stringify(todos.value));
+    push.success({
+      title: 'Task updated!',
+      message: 'Task has been updated successfully.',
+    });
     editTodo.value = null;
     editText.value = '';
     editDueDate.value = '';
@@ -84,26 +114,42 @@ function saveTodo() {
   }
 }
 
-function markAsComplete(todo) {
-  todo.done = true;
-  localStorage.setItem('todos', JSON.stringify(todos.value));
-}
-
-function markAsNotComplete(todo) {
-  todo.done = false;
-  localStorage.setItem('todos', JSON.stringify(todos.value));
-}
-
 function markAllAsComplete() {
-  todos.value.forEach(todo => {
+  sortedTodos.value.forEach(todo => {
     todo.done = true;
   });
   localStorage.setItem('todos', JSON.stringify(todos.value));
+  push.success({
+    title: 'All tasks marked as completed!',
+    message: 'All tasks have been marked as completed successfully.',
+  });
+}
+
+function removeAllCompletedTasks() {
+  const visibleCompletedTodos = sortedTodos.value.filter(todo => todo.done);
+  todos.value = todos.value.filter(todo => !visibleCompletedTodos.includes(todo));
+  localStorage.setItem('todos', JSON.stringify(todos.value));
+
+  if (visibleCompletedTodos.length) {
+    push.success({
+      title: 'Completed tasks removed!',
+      message: 'All completed tasks have been removed successfully.',
+    });
+  } else {
+    push.info({
+      title: 'No completed tasks found!',
+      message: 'There are no completed tasks to remove.',
+    });
+  }
 }
 
 function setPriority(todo, priority) {
   todo.priority = priority;
   localStorage.setItem('todos', JSON.stringify(todos.value));
+  push.info({
+    title: 'Priority updated!',
+    message: 'Task priority has been updated successfully.',
+  });
 }
 
 const filteredTodos = computed(() => {
@@ -120,8 +166,6 @@ const filteredTodos = computed(() => {
     return matchesSearch && matchesCompletion && matchesFilter && matchesCategory;
   });
 });
-
-console.log(filteredTodos);
 
 const sortedTodos = computed(() => {
   return filteredTodos.value.slice().sort((a, b) => {
@@ -177,11 +221,14 @@ const formatDueDate = (dueDate) => {
     <div class="my-4">
       <h1 v-if="filter !== 'all'" class="font-bold text-blue-600">
         {{ filter === 'today' ? 'Today\'s Tasks' : filter.charAt(0).toUpperCase() + filter.slice(1) }}</h1>
-      <h1 class="text-2xl md:text-3xl font-bold text-blue-600">To Do List</h1>
+      <h1 class="text-2xl md:text-3xl font-bold text-blue-600">{{categoriesFilter}} - To Do List</h1>
     </div>
     <div class="flex flex-col md:flex-row items-center justify-between mt-4">
       <div class="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0 md:space-x-2">
-        <button @click="markAllAsComplete" class="bg-green-500 text-white p-2 rounded-lg shadow-md hover:bg-green-600">
+        <button v-if="filter === 'completed'" @click="removeAllCompletedTasks" class="bg-red-500 text-white p-2 rounded-lg shadow-md hover:bg-red-600">
+          Remove All Completed Tasks
+        </button>
+        <button v-else @click="markAllAsComplete" class="bg-green-500 text-white p-2 rounded-lg shadow-md hover:bg-green-600">
           Mark All as Complete
         </button>
         <input v-model="searchQuery" placeholder="Search tasks"
@@ -189,13 +236,13 @@ const formatDueDate = (dueDate) => {
       </div>
     </div>
     <div v-if="sortedTodos.length" class="rounded-xl w-full md:w-screen-md min-h-2xl mt-4 text-white">
-      <div v-for="(todo, index) in sortedTodos" :key="index">
+      <div v-for="(todo, index) in sortedTodos" :key="index" :class="animationClass">
         <div v-if="editTodo !== todo"
-            :class="{
+             :class="{
      'bg-yellow-100 !text-gray-800': todo.priority,
      'bg-white !text-gray-800': !todo.priority,
    }"
-            class="flex justify-between items-center border-b p-4 rounded-xl relative group m-2">
+             class="flex justify-between items-center border-b p-4 rounded-xl relative group m-2">
           <div class="flex flex-col items-center">
             <div class="flex items-center">
               <button @click="toggleTodo(todo)"
