@@ -322,7 +322,7 @@ const formatDueDate = (dueDate) => {
       </div>
     </div>
     <div v-else class="text-center text-gray-500 mt-4">
-      No tasks available or Not Found. Please add a new task.
+      No tasks available. Please add a new task.
     </div>
     <div class="mt-4 flex justify-center" v-show="filter !== 'completed'">
       <button @click="showAddTaskForm = !showAddTaskForm" v-if="!showAddTaskForm"
