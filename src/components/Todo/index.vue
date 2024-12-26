@@ -14,6 +14,7 @@ import {computed, ref, watch} from 'vue';
 import {format, isToday, isTomorrow, differenceInDays, addWeeks, addMonths, isSameWeek, isSameMonth} from 'date-fns';
 
 const animationClass = 'motion-preset-bounce'
+const addAnimClass = "motion-scale-in-[0] motion-translate-x-in-[-1%] motion-translate-y-in-[-102%] motion-opacity-in-[0%] motion-duration-[0.87s]/scale motion-duration-[1.00s]/opacity"
 
 const todos = ref([]);
 if (localStorage.getItem('todos')) {
@@ -330,7 +331,7 @@ const formatDueDate = (dueDate) => {
         + Add Task
       </button>
     </div>
-    <div v-if="showAddTaskForm" v-show="filter !== 'completed'"
+    <div v-if="showAddTaskForm" v-show="filter !== 'completed'" :class="addAnimClass"
          class="mt-4 flex flex-col rounded-xl w-full min-h-min border-2 border-gray-200 bg-white">
       <input v-model="newTodo" placeholder="Add a new task"
              class="p-4  rounded-t-xl flex-1 focus:border-blue-500 outline-none"/>

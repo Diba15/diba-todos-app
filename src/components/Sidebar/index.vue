@@ -12,6 +12,31 @@ const props = defineProps({
   categoriesFilter: String,
 });
 
+const categoriesAnimClass = "motion-scale-in-[0] motion-translate-x-in-[0%] motion-translate-y-in-[110%] motion-opacity-in-[0%] motion-duration-[0.87s]/scale motion-duration-[0.32s]/opacity"
+
+const filterMenus = [
+  {
+    text: 'All',
+    icon: 'fas fa-list',
+    filter: 'all',
+  },
+  {
+    text: 'Today',
+    icon: 'fas fa-calendar-day',
+    filter: 'today',
+  },
+  {
+    text: 'Completed',
+    icon: 'fas fa-check',
+    filter: 'completed',
+  },
+  {
+    text: 'Upcoming',
+    icon: 'fas fa-calendar-alt',
+    filter: 'upcoming',
+  }
+]
+
 const emit = defineEmits(['toggleSidebar', 'filterTodos', 'updateCategoriesFilter']);
 
 const toggleSidebar = () => {
@@ -65,9 +90,9 @@ const toggleCategories = () => {
     </div>
 
     <!-- Categories List for Mobile -->
-    <div v-if="showCategories" class="fixed bottom-16 left-0 right-0 bg-white text-gray-800 shadow-lg border-t-2 border-gray-300 p-4 z-50 motion-preset-expand">
+    <div v-if="showCategories" :class="categoriesAnimClass" class="fixed bottom-16 left-0 right-0 bg-white text-gray-800 shadow-lg border-t-2 border-gray-300 p-4 z-50 m-5">
       <div v-for="category in props.categories" :key="category" @click="updateCategoriesFilter(category)"
-           :class="['p-2 cursor-pointer', { 'bg-yellow-300 text-gray-800': isCategoryActive(category) }]">
+           :class="['p-2 cursor-pointer rounded-lg transition-colors duration-300 hover:bg-yellow-300 hover:text-gray-800', { 'bg-yellow-300 text-gray-800': isCategoryActive(category) }]">
         {{ category }}
       </div>
     </div>
@@ -82,24 +107,10 @@ const toggleCategories = () => {
       <div class="flex flex-col gap-3 justify-center"
            :class="{'mx-3' : isSidebarOpen ? 'items-center' : !isSidebarOpen}">
         <h1 class="text-gray-300 font-bold" v-if="props.isSidebarOpen">Filter Menu</h1>
-        <div @click="filterTodos('all')"
-             :class="['sidebar-item flex items-center p-2 text-md transition-colors duration-300 hover:bg-yellow-300 hover:text-gray-800 cursor-pointer rounded', { 'bg-yellow-300 !text-gray-800': isActive('all') }]">
-          <i class="fas fa-list transition-colors duration-300 "></i> <span v-if="props.isSidebarOpen"
-                                                                            class="ml-2">All</span>
-        </div>
-        <div @click="filterTodos('today')"
-             :class="['sidebar-item flex items-center p-2 text-md transition-colors duration-300 hover:bg-yellow-300 hover:text-gray-800 cursor-pointer rounded', { 'bg-yellow-300 !text-gray-800': isActive('today') }]">
-          <i class="fas fa-calendar-day transition-colors duration-300 "></i> <span v-if="props.isSidebarOpen"
-                                                                                    class="ml-2">Today</span>
-        </div>
-        <div @click="filterTodos('completed')"
-             :class="['sidebar-item flex items-center p-2 text-md transition-colors duration-300 hover:bg-yellow-300 hover:text-gray-800 cursor-pointer rounded', { 'bg-yellow-300 !text-gray-800': isActive('completed') }]">
-          <i class="fas fa-check  transition-colors duration-300 "></i> <span v-if="props.isSidebarOpen" class="ml-2">Completed</span>
-        </div>
-        <div @click="filterTodos('upcoming')"
-             :class="['sidebar-item flex items-center p-2 text-md transition-colors duration-300 hover:bg-yellow-300 hover:text-gray-800 cursor-pointer rounded', { 'bg-yellow-300 !text-gray-800': isActive('upcoming') }]">
-          <i class="fas fa-calendar-alt transition-colors duration-300 "></i> <span v-if="props.isSidebarOpen"
-                                                                                    class="ml-2">Upcoming</span>
+        <div @click="filterTodos(menu.filter)" v-for="menu in filterMenus" :key="menu.filter"
+             :class="['sidebar-item flex items-center p-2 text-md transition-colors duration-300 hover:bg-yellow-300 hover:text-gray-800 cursor-pointer rounded', { 'bg-yellow-300 !text-gray-800': isActive(menu.filter) }]">
+          <i :class="menu.icon" class="transition-colors duration-300 "></i> <span v-if="props.isSidebarOpen"
+                                                                            class="ml-2">{{menu.text}}</span>
         </div>
       </div>
 
