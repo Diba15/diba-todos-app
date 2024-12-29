@@ -3,7 +3,7 @@ defineOptions({
   name: 'Sidebar',
 })
 
-import {ref, defineProps, defineEmits} from 'vue';
+import {ref} from 'vue';
 
 const props = defineProps({
   isSidebarOpen: Boolean,
@@ -102,7 +102,7 @@ const toggleCategories = () => {
         :class="['sidebar hidden md:flex flex-col gap-8 fixed top-0 left-0 h-full w-full bg-blue-600 text-white shadow-lg border-2 border-blue-700 transition-width duration-300', { 'sidebar-open': props.isSidebarOpen, 'sidebar-closed': !props.isSidebarOpen }]">
       <button @click="toggleSidebar"
               class="m-2 p-2 bg-white text-blue-600 rounded shadow font-bold hover:bg-gray-200 hover:shadow-lg h-10 w-10 flex items-center justify-center">
-        <i :class="props.isSidebarOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
+        <i :class="props.isSidebarOpen ? 'fas fa-chevron-left' : 'fas fa-chevron-right'"></i>
       </button>
       <div class="flex flex-col gap-3 justify-center"
            :class="{'mx-3' : isSidebarOpen ? 'items-center' : !isSidebarOpen}">
