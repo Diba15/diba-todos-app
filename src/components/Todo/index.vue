@@ -19,6 +19,14 @@ const addAnimClass = "motion-scale-in-[0] motion-translate-x-in-[-1%] motion-tra
 const todos = ref([]);
 if (localStorage.getItem('todos')) {
   todos.value = JSON.parse(localStorage.getItem('todos'));
+} else {
+  todos.value = [
+    { text: 'Work Task 1', done: false, dueDate: new Date().toISOString().slice(0, 10), category: 'Work', priority: false },
+    { text: 'Personal Task 1', done: false, dueDate: new Date().toISOString().slice(0, 10), category: 'Personal', priority: false },
+    { text: 'Shopping Task 1', done: false, dueDate: new Date().toISOString().slice(0, 10), category: 'Shopping', priority: false },
+    { text: 'Other Task 1', done: false, dueDate: new Date().toISOString().slice(0, 10), category: 'Others', priority: false }
+  ];
+  localStorage.setItem('todos', JSON.stringify(todos.value));
 }
 const newTodo = ref('');
 const newDueDate = ref(new Date().toISOString().slice(0, 10));
