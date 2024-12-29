@@ -2,7 +2,6 @@
 import Todo from "@/components/Todo/index.vue";
 import Sidebar from "@/components/Sidebar/index.vue";
 import {onMounted, ref} from 'vue';
-import { Analytics } from '@vercel/analytics/vue';
 
 const isSidebarOpen = ref(false);
 const filter = ref('all');
@@ -46,7 +45,6 @@ onMounted(() => {
 
 <template>
   <div :class="[{ 'content-shift-open': isSidebarOpen, 'content-shift-closed': !isSidebarOpen }]">
-    <Analytics />
     <Sidebar :isSidebarOpen="isSidebarOpen" :activeFilter="filter" :categories="categories" :categoriesFilter="categoriesFilter"
              @toggleSidebar="toggleSidebar" @filterTodos="updateFilter"
              @updateCategoriesFilter="updateCategoriesFilter"/>
