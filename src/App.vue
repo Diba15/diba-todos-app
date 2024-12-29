@@ -45,8 +45,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <Analytics />
   <div :class="[{ 'content-shift-open': isSidebarOpen, 'content-shift-closed': !isSidebarOpen }]">
+    <Analytics />
     <Sidebar :isSidebarOpen="isSidebarOpen" :activeFilter="filter" :categories="categories" :categoriesFilter="categoriesFilter"
              @toggleSidebar="toggleSidebar" @filterTodos="updateFilter"
              @updateCategoriesFilter="updateCategoriesFilter"/>
