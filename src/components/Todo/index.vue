@@ -309,7 +309,7 @@ const formatDueDate = (dueDate) => {
           <hr>
           <div class="flex flex-col md:flex-row gap-2 justify-start md:justify-between p-3">
             <div class="flex gap-2">
-              <input v-model="editDueDate" type="date"
+              <input v-model="editDueDate" type="date" :min="new Date().toISOString().slice(0, 10)"
                      class="p-3 max-w-min flex-1 focus:border-blue-500 custom-pointer outline-none"/>
               <select v-model="editCategory"
                       class="p-3 flex-1 max-w-min hover:bg-gray-100 custom-pointer focus:border-blue-500 outline-none">
@@ -346,7 +346,7 @@ const formatDueDate = (dueDate) => {
       <hr>
       <div class="flex flex-col md:flex-row gap-2 justify-start md:justify-between p-3">
         <div class="flex gap-2">
-          <input v-model="newDueDate" type="date"
+          <input v-model="newDueDate" type="date" :min="new Date().toISOString().slice(0, 10)"
                  class="p-3 max-w-min flex-1 focus:border-blue-500 custom-pointer outline-none"/>
           <select v-model="newCategory"
                   class="p-3 flex-1 max-w-min hover:bg-gray-100 custom-pointer focus:border-blue-500 outline-none">

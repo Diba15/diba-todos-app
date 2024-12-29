@@ -116,7 +116,7 @@ const toggleCategories = () => {
         </div>
       </div>
 
-      <div v-if="!isSidebarOpen" class="self-center p-1 h-fit w-fit bg-white rounded-full"></div>
+      <div v-if="!isSidebarOpen" class="self-center p-1 h-fit w-fit bg-white rounded-full hover:motion-preset-blink"></div>
       <hr v-else class="mx-2">
 
       <div class="flex flex-col gap-3 justify-center"
