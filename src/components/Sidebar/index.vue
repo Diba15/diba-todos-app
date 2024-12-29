@@ -116,7 +116,8 @@ const toggleCategories = () => {
         </div>
       </div>
 
-      <hr>
+      <div v-if="!isSidebarOpen" class="self-center p-1 h-fit w-fit bg-white rounded-full"></div>
+      <hr v-else class="mx-2">
 
       <div class="flex flex-col gap-3 justify-center"
            :class="{'mx-3' : isSidebarOpen ? 'items-center' : !isSidebarOpen}">
