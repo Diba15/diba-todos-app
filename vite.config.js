@@ -10,6 +10,7 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
+  optimizeDeps: ['@auth0/auth0-vue'],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
